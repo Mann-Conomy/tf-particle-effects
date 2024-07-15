@@ -27,8 +27,8 @@ import type { ImageProvider, ImageSize } from "../types/image";
 
 export default class UnusualEffect extends ParticleEffect {
     ...
-    async toImage(provider: ImageProvider, size: ImageSize, animated = false): string {
-        const url = createProviderUrl(provider, size, animated);
+    async toImage(provider: ImageProvider, size: ImageSize): string {
+        const url = createProviderUrl(provider, size);
         const response = await fetch(url);
 
         return await response.text();

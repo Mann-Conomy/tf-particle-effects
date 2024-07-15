@@ -26,21 +26,22 @@ A clear and concise description of what you expected to happen.
 A clear and concise description of what happens.
 
 ## Minimal reproducible example
-Calling `find()` on a new `KillstreakEffect` instance returns "Error finding effect...".
+Calling `find()` on a new `UnusualEffect` instance returns "Error processing effect...".
 
 ```js
-import { KillstreakEffect } from "@mann-conomy/tf-particle-effects";
+import { UnusualEffect } from "@mann-conomy/tf-particle-effects";
 
 (async () => {
     try {
-        const effect = new KillstreakEffect({ id: 2006 });
+        const effect = new UnusualEffect({ name: "Burning Flames" });
 
-        const { id, name } = effect.find();
+        if (effect.eval()) {
+            const { id, name } = effect.find();
 
-        console.log(id);
-        console.log(name);
+            console.log(id, name);
+        }
     } catch (error) {
-        console.error("Error finding effect", error.message);
+        console.error("Error processing effect", error.message);
     }
 })();
 ```
