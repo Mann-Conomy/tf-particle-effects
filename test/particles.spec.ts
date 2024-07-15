@@ -215,7 +215,7 @@ describe("KillstreakSheen", () => {
         const result = sheen.stringify();
 
         // Assert
-        expect(result).toBe(JSON.stringify(sheen));
+        expect(result).toBe(JSON.stringify(sheen.json()));
     });
 
     test("eval should return false without any constructor parameters", () => {

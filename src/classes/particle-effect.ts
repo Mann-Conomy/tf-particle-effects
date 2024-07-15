@@ -152,7 +152,7 @@ export default class ParticleEffect {
      * @returns The JSON string representation of the ParticleEffect.
      */
     stringify(): string {
-        return JSON.stringify(this);
+        return JSON.stringify(this.json());
     }
 
     /**
