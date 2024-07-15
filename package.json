@@ -1,0 +1,57 @@
+{
+  "name": "@mann-conomy/tf-particle-effects",
+  "version": "1.0.0",
+  "description": "A Node.js wrapper for Team Fortress 2's in-game particle effects.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "fix": "eslint -c eslint.config.js . --fix",
+    "update": "npx ts-node tools/update.ts",
+    "lint": "eslint -c eslint.config.js .",
+    "prepublishOnly": "npm run build",
+    "build": "npm run clean && tsc",
+    "coverage": "jest --coverage",
+    "clean": "rimraf dist",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mann-Conomy/tf-particle-effects.git"
+  },
+  "keywords": [
+    "nodejs",
+    "json",
+    "typescript",
+    "localization",
+    "tf2",
+    "particle-effects",
+    "mann-conomy"
+  ],
+  "author": "The Mann-Conomy Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mann-Conomy/tf-particle-effects/issues"
+  },
+  "homepage": "https://github.com/Mann-Conomy/tf-particle-effects#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.6.0",
+    "@jest/globals": "^29.7.0",
+    "@mann-conomy/tf-parser": "^1.1.1",
+    "@mann-conomy/tsconfig": "^1.1.0",
+    "@mann-conomy/typescript-eslint-config": "^1.0.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.9",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "glob": "^10.4.2",
+    "jest": "^29.7.0",
+    "rimraf": "^5.0.7",
+    "ts-jest": "^29.1.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.14.1"
+  }
+}

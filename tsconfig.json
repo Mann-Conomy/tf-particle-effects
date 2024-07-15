@@ -1,0 +1,15 @@
+{
+	"extends": "@mann-conomy/tsconfig",
+	"compilerOptions": {
+		"outDir": "dist",
+		"resolveJsonModule": true
+	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"test/**/*",
+		"dist/**/*"
+	]
+}
