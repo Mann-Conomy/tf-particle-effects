@@ -1,5 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
-import { LanguageCode } from "@mann-conomy/tf-parser";
+import type { LanguageCode } from "@mann-conomy/tf-parser";
+import LocalizationError from "../src/classes/errors/localization";
 import { getLanguageTranslation, getLanguageSubtag } from "../src/lib/utils";
 
 describe("getLanguageTranslation", () => {
@@ -8,7 +9,7 @@ describe("getLanguageTranslation", () => {
         const language = "indonesian" as LanguageCode;
 
         // Act and assert
-        expect(() => getLanguageTranslation(language)).toThrow(Error);
+        expect(() => getLanguageTranslation(language)).toThrow(LocalizationError);
     });
 });
 
@@ -18,6 +19,6 @@ describe("getLanguageSubtag", () => {
         const translation = "Faroese";
 
         // Act and assert
-        expect(() => getLanguageSubtag(translation)).toThrow(Error);
+        expect(() => getLanguageSubtag(translation)).toThrow(LocalizationError);
     });
 });

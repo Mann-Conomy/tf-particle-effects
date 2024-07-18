@@ -1,14 +1,15 @@
 import { LanguageSubtag } from "../resources/enums";
-import { type LanguageCode, LanguageTranslation } from "@mann-conomy/tf-parser";
+import LocalizationError from "../classes/errors/localization";
 import type { IParticleAttribute, IParticleEffect } from "../types/particle";
+import { type LanguageCode, LanguageTranslation } from "@mann-conomy/tf-parser";
 
 /**
- * Checks if the attributes array contains more than one element.
+ * Checks if the attributes array is udefined or empty.
  * @param attributes An array of particle attributes.
- * @returns True if the attributes array contains more than one element, otherwise false.
+ * @returns True if the attributes array is udefined or empty, otherwise false.
  */
-export function isAttributesArray(attributes: IParticleAttribute[]): boolean {
-    return Array.isArray(attributes) && attributes.length > 0;
+export function isUndefinedOrEmpty(attributes: IParticleAttribute[]): boolean {
+    return !(Array.isArray(attributes) && attributes.length > 0);
 }
 
 /**
@@ -36,7 +37,7 @@ export function getLanguageTranslation(language: LanguageCode): string {
         return translation.name;
     }
 
-    throw new Error("No translation exists for the provided language code.");
+    throw new LocalizationError("No translation exists for the provided language code.");
 }
 
 /**
@@ -54,7 +55,7 @@ export function getLanguageSubtag(translation: string): string {
         return languageTag.subtag;
     }
 
-    throw new Error("No language subtag was found matching the provided language code.");
+    throw new LocalizationError("No language subtag was found matching the provided language code.");
 }
 
 /**

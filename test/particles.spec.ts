@@ -2,8 +2,10 @@ import { describe, expect, test } from "@jest/globals";
 import UnusualEffect from "../src/classes/unusual-effect";
 import type { LanguageCode } from "@mann-conomy/tf-parser";
 import ParticleEffect from "../src/classes/particle-effect";
+import NotFoundError from "../src/classes/errors/not-found";
 import KillstreakSheen from "../src/classes/killstreak-sheen";
 import KillstreakEffect from "../src/classes/killstreak-effect";
+import TranslationError from "../src/classes/errors/translation";
 import ParticleAttribute from "../src/classes/particle-attribute";
 import UnusualEffects from "../src/resources/particles/unusuals.json";
  
@@ -77,7 +79,7 @@ describe("UnusualEffect", () => {
         const effect = new UnusualEffect({ id: 69 });
 
         // Act and assert
-        expect(() => effect.find(true)).toThrow(Error);
+        expect(() => effect.find(true)).toThrow(NotFoundError);
     });
 
     test("should find the particle attributes with strict mode enabled", () => {
@@ -97,7 +99,7 @@ describe("UnusualEffect", () => {
         const effect = new UnusualEffect();
         
         // Act and assert
-        expect(() => effect.find()).toThrow(Error);
+        expect(() => effect.find()).toThrow(NotFoundError);
     });
 
     test("all should return all the Unusual effects", () => {
@@ -109,16 +111,6 @@ describe("UnusualEffect", () => {
 
         // Assert
         expect(result.length).toBe(450);
-    });
-
-    test("all should throw an error if the language is not supported", () => {
-        // Arrange
-        const language = "icelandic" as LanguageCode;
-
-        const effect = new UnusualEffect({ language });
-
-        // Act and assert
-        expect(() => effect.all()).toThrow(Error);
     });
 });
 
@@ -137,15 +129,7 @@ describe("KillstreakEffect", () => {
         const effect = new KillstreakEffect({ id: 11 });
 
         // Assert and act
-        expect(() => effect.find()).toThrow(Error);
-    });
-    
-    test("should throw if no translation exists for the Killstreak Effect", () => {
-        // Arrange
-        const effect = new KillstreakEffect({ id: 2008, language: "pirate" });
-
-        // Assert and act
-        expect(() => effect.find()).toThrow(Error);
+        expect(() => effect.find()).toThrow(NotFoundError);
     });
 
     test("should return all the Killstreak effects", () => {
@@ -164,17 +148,15 @@ describe("KillstreakEffect", () => {
         const effect = new KillstreakEffect({ id: 2004 });
 
         // Act and assert
-        expect(() => effect.translate("pirate")).toThrow(Error);
+        expect(() => effect.translate("pirate")).toThrow(TranslationError);
     });
 
-    test("translate should throw if the language is not supported", () => {
+    test("should throw if the language code is ", () => {
         // Arrange
-        const language = "arabic" as LanguageCode;
-
-        const effect = new KillstreakEffect({ id: 2004, language });
+        const language = "indonesian" as LanguageCode;
 
         // Act and assert
-        expect(() => effect.translate("german")).toThrow(Error);
+        expect(() => new KillstreakEffect({ language })).toThrow(NotFoundError);
     });
 });
 
@@ -262,16 +244,6 @@ describe("KillstreakSheen", () => {
         expect(result).toBe(false);
     });
 
-    test("eval should throw if the language is not supported", () => {
-        // Arrange
-        const language = "indonesian" as LanguageCode;
-
-        const sheen = new KillstreakSheen({ id: 2, language });
-
-        // Act and assert
-        expect(() => sheen.eval()).toThrow(Error);
-    });
-
     test("should translate Team Shine to Dutch", () => {
         // Arrange
         const sheen = new KillstreakSheen({ name: "Team Shine" });
@@ -288,7 +260,7 @@ describe("KillstreakSheen", () => {
         const sheen = new KillstreakSheen();
 
         // Act and assert
-        expect(() => sheen.translate("dutch")).toThrow(Error);
+        expect(() => sheen.translate("dutch")).toThrow(NotFoundError);
     });
 
     test("translate should throw if only one constructor parameter is given in strict mode", () => {
@@ -296,7 +268,7 @@ describe("KillstreakSheen", () => {
         const sheen = new KillstreakSheen({ name: "Team Shine" });
 
         // Act and assert
-        expect(() => sheen.translate("dutch", true)).toThrow(Error);
+        expect(() => sheen.translate("dutch", true)).toThrow(NotFoundError);
     });
 
     test("should translate Team Shine to Danish in strict mode", () => {
