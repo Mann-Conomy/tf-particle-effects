@@ -1,7 +1,9 @@
+import NotFoundError from "./errors/not-found";
+import TranslationError from "./errors/translation";
 import { InvalidParticle } from "../resources/enums";
 import { LanguageTranslation, type LanguageCode } from "@mann-conomy/tf-parser";
-import type { IParticleEffect, IParticleAttribute, IParticleEffects } from "../types/particle";
-import { compareById, compareByIdAndName, compareByIdOrName, isAttributesArray } from "../lib/utils";
+import { compareById, compareByIdAndName, compareByIdOrName, isUndefinedOrEmpty } from "../lib/utils";
+import type { IParticleEffect, IParticleAttribute, IParticleEffects, PartialParticleEffect } from "../types/particle";
 
 /**
  * Represents a generic Particle Effect from the Team Fortress 2 game files.
@@ -18,61 +20,56 @@ export default class ParticleEffect {
      * @param effect The Particle Effect object.
      * @param particles An array of ParticleEffect objects.
      */
-    constructor(effect: Partial<IParticleEffect> = {}, particles: IParticleEffects) {        
+    constructor(effect: PartialParticleEffect = {}, particles: IParticleEffects) {
         this.id = effect.id || InvalidParticle.Id;
         this.name = effect.name || InvalidParticle.Name;
         this.language = effect.language || LanguageTranslation.English;
 
         this.particles = particles;
         this.attributes = particles[this.language];
+
+        if (isUndefinedOrEmpty(this.attributes)) {
+            throw new NotFoundError("No particle effects were found matching the provided language code.");
+        }
     }
 
     /**
      * Evaluates the particle effect based on the provided strictness.
      * @param strict If true, it enables strict evaluation for both the effect's id and name, if false, it evaluates by either the id or name.
      * @returns True if a matching particle attribute is found, otherwise false.
-     * @throws An error if the language code is invalid or not supported.
      */
     eval(strict = false): boolean {
-        if (isAttributesArray(this.attributes)) {
-            if (strict) {
-                return this.attributes.some(attribute => compareByIdAndName(attribute, this.json()));
-            }
-    
-            return this.attributes.some(attribute => compareByIdOrName(attribute, this.json()));
+        if (strict) {
+            return this.attributes.some(attribute => compareByIdAndName(attribute, this.json()));
         }
 
-        throw new Error("No particle effect was found matching the provided language code.");
+        return this.attributes.some(attribute => compareByIdOrName(attribute, this.json()));
     }
 
     /**
-     * Finds a particle attribute based on the constructor options.
+     * Finds a particle attribute based on the specified options.
      * @param strict If true, it enables strict evaluation for both the effect's id and name, if false, it evaluates by either the id or name.
-     * @returns The particle attribute that matches the constructor options.
-     * @throws An error if the language is not supported, the particle effect is too new, or if no particle effect matches the constructor options.
+     * @returns The particle attribute that matches the specified options.
+     * @throws An error if the particle effect is too new or if no particle effect was found with the specified options.
      */
     find(strict = false): IParticleAttribute {
-        if (isAttributesArray(this.attributes)) {
-            if (strict) {
-                const attribute = this.attributes.find(attribute => compareByIdAndName(attribute, this.json()));
-
-                if (attribute !== undefined) {
-                    return attribute;
-                }
-
-                throw new Error("No particle effect was found with the specified id and name.");
-            }
-    
-            const attribute = this.attributes.find(attribute => compareByIdOrName(attribute, this.json()));
+        if (strict) {
+            const attribute = this.attributes.find(attribute => compareByIdAndName(attribute, this.json()));
 
             if (attribute !== undefined) {
                 return attribute;
             }
 
-            throw new Error("No particle effect was found with the specified id or name.");
+            throw new NotFoundError("No particle effect was found with the specified id and name.");
         }
 
-        throw new Error("No particle effects were found matching the provided language code.");
+        const attribute = this.attributes.find(attribute => compareByIdOrName(attribute, this.json()));
+
+        if (attribute !== undefined) {
+            return attribute;
+        }
+
+        throw new NotFoundError("No particle effect was found with the specified id or name.");
     }
 
     /**
@@ -80,35 +77,26 @@ export default class ParticleEffect {
      * @param language The language code to translate the particle attribute to.
      * @param strict If true, it enables strict evaluation for both the effect's id and name, if false, it evaluates by either the id or name.
      * @returns The translated particle attribute that matches the constructor options.
-     * @throws An error if the language is not supported or if no particle effect matches the constructor options.
+     * @throws An error if no particle effect matches the constructor options.
      */
     translate(language: LanguageCode, strict = false): IParticleAttribute {
-        if (isAttributesArray(this.attributes)) {
-            const particle = this.find(strict);
+        const particle = this.find(strict);
     
-            const attribute = this.particles[language].find(attribute => compareById(attribute, particle.id));
-    
-            if (attribute !== undefined) {
-                return attribute;
-            }
+        const attribute = this.particles[language].find(attribute => compareById(attribute, particle.id));
 
-            throw new Error("No translation exists for this particle effect.");
+        if (attribute !== undefined) {
+            return attribute;
         }
 
-        throw new Error("No particle effects were found matching the provided language code.");
+        throw new TranslationError("No translation exists for this particle effect.");
     }
 
     /**
      * Gets all the Particle Effects currently available in Team Fortress 2.
      * @returns An array of particle attributes for each particle effect in Team Fortress 2.
-     * @throws An error if the language code is invalid or not supported.
      */
     all(): IParticleAttribute[] {
-        if (isAttributesArray(this.attributes)) {
-            return this.attributes;
-        }
-
-        throw new Error("No particle effects were found matching the provided language code.");
+        return this.attributes;
     }
 
     /**
@@ -152,7 +140,7 @@ export default class ParticleEffect {
      * @returns The JSON string representation of the ParticleEffect.
      */
     stringify(): string {
-        return JSON.stringify(this);
+        return JSON.stringify(this.json());
     }
 
     /**
