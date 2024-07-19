@@ -110,7 +110,7 @@ describe("UnusualEffect", () => {
         const result = effect.all();
 
         // Assert
-        expect(result.length).toBe(503);
+        expect(result.length).toBe(502);
     });
 });
 
