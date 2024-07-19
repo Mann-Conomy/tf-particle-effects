@@ -124,7 +124,7 @@ function getParticleAttributes(tokens: Record<string, string>, filter: ParticleA
         return new ParticleAttribute(id, name);
     });
 
-    return attributes.filter(attribute => attribute.getId() > 0);
+    return attributes.filter(attribute => attribute.getId() > 0 && attribute.getName().length > 0);
 }
 
 /**
