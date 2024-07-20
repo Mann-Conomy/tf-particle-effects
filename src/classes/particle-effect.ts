@@ -1,7 +1,7 @@
 import NotFoundError from "./errors/not-found";
 import TranslationError from "./errors/translation";
-import { InvalidParticle } from "../resources/enums";
-import { LanguageTranslation, type LanguageCode } from "@mann-conomy/tf-parser";
+import type { LanguageCode } from "@mann-conomy/tf-parser";
+import { InvalidParticle, LanguageTranslation } from "../resources/enums";
 import { compareById, compareByIdAndName, compareByIdOrName, isUndefinedOrEmpty } from "../lib/utils";
 import type { IParticleEffect, IParticleAttribute, IParticleEffects, PartialParticleEffect } from "../types/particle";
 

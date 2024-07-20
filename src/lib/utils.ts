@@ -1,7 +1,7 @@
-import { LanguageSubtag } from "../resources/enums";
+import type { LanguageCode } from "@mann-conomy/tf-parser";
 import LocalizationError from "../classes/errors/localization";
+import { LanguageSubtag, LanguageTranslation } from "../resources/enums";
 import type { IParticleAttribute, IParticleEffect } from "../types/particle";
-import { type LanguageCode, LanguageTranslation } from "@mann-conomy/tf-parser";
 
 /**
  * Checks if the attributes array is udefined or empty.
