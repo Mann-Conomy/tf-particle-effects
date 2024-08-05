@@ -1,4 +1,4 @@
-# particle-effects
+# tf-particle-effects
 
 A Node.js wrapper for Team Fortress 2's in-game particle effects.
 
