@@ -9,6 +9,7 @@ module.exports = tseslint.config({
         "dist/**/*",
         "test/**/*.ts",
         "examples/*.ts",
+        "jest.setup.ts",
         "jest.config.ts",
         "eslint.config.js"
     ]
