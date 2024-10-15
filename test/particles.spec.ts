@@ -5,15 +5,15 @@ import ParticleEffect from "../src/classes/particle-effect";
 import NotFoundError from "../src/classes/errors/not-found";
 import KillstreakSheen from "../src/classes/killstreak-sheen";
 import KillstreakEffect from "../src/classes/killstreak-effect";
+import unusuals from "../src/resources/particles/unusuals.json";
 import TranslationError from "../src/classes/errors/translation";
 import ParticleAttribute from "../src/classes/particle-attribute";
-import UnusualEffects from "../src/resources/particles/unusuals.json";
- 
+
 describe("ParticleEffect", () => {
     test("should return default values if the effect object is undefined", () => {
         // Arrange
         const options = undefined;
-        const effect = new ParticleEffect(options, UnusualEffects);
+        const effect = new ParticleEffect(options, unusuals);
 
         // Act
         const id = effect.getId();
@@ -28,7 +28,7 @@ describe("ParticleEffect", () => {
 
     test("copy should return a copy of the current ParticleEffect instance", () => {
         // Arrange
-        const effect = new ParticleEffect({ id: 8, language: "dutch" }, UnusualEffects);
+        const effect = new ParticleEffect({ id: 8, language: "dutch" }, unusuals);
 
         // Act
         const clone = effect.copy();
@@ -42,7 +42,7 @@ describe("ParticleEffect", () => {
 
     test("toString should return the particle's id, name and language joined by a semicolon", () => {
         // Arrange
-        const effect = new ParticleEffect({ id: 13, name: "Burning Flames" }, UnusualEffects);
+        const effect = new ParticleEffect({ id: 13, name: "Burning Flames" }, unusuals);
 
         // Act
         const result = effect.toString();
@@ -80,6 +80,7 @@ describe("UnusualEffect", () => {
 
         // Act and assert
         expect(() => effect.find(true)).toThrow(NotFoundError);
+        expect(() => UnusualEffect.find(effect.json(), true)).toThrow(NotFoundError);
     });
 
     test("should find the particle attributes with strict mode enabled", () => {
@@ -87,19 +88,55 @@ describe("UnusualEffect", () => {
         const effect = new UnusualEffect({ id: 69, name: "Anti-Freeze" });
 
         // Act
-        const attributes = effect.find(true);
+        const first = effect.find(true);
+        const second = UnusualEffect.find(effect.json(), true);
 
         // Assert
-        expect(attributes.id).toBe(69);
-        expect(attributes.name).toBe("Anti-Freeze");
+        expect([first.id, second.id]).toAllBe(69);
+        expect([first.name, second.name]).toAllBe("Anti-Freeze");
     });
 
     test("should throw when find is called without any constructor parameters", () => {
         // Arrange
         const effect = new UnusualEffect();
-        
+        const empty = Object.create(Object.prototype);
+
         // Act and assert
         expect(() => effect.find()).toThrow(NotFoundError);
+        expect(() => UnusualEffect.find(empty)).toThrow(NotFoundError);
+    });
+
+    test("eval should return true if the name matches a known Unusual Effect", () => {
+        // Arrange
+        const effect = new UnusualEffect({ name: "Burning Flames" });
+
+        // Act
+        const first = effect.eval();
+        const second = UnusualEffect.eval(effect.json());
+
+        // Assert
+        expect([first, second]).toAllBe(true);
+    });
+
+    test("should translate Flaming Lantern to Dutch", () => {
+        // Arrange
+        const effect = new UnusualEffect({ name: "Flaming Lantern" });
+
+        // Act
+        const first = effect.translate("dutch");
+        const second = UnusualEffect.translate(effect.json(), "dutch");
+
+        // Assert
+        expect([first.name, second.name]).toAllBe("Vlammende Lantaarn");
+    });
+
+    test("translate should throw if no constructor parameters is given", () => {
+        // Arrange
+        const effect = new UnusualEffect();
+
+        // Act and assert
+        expect(() => effect.translate("dutch")).toThrow(NotFoundError);
+        expect(() => UnusualEffect.translate(effect.json(), "dutch")).toThrow(NotFoundError);
     });
 
     test("all should return all the Unusual effects", () => {
@@ -107,10 +144,11 @@ describe("UnusualEffect", () => {
         const effect = new UnusualEffect();
 
         // Act
-        const result = effect.all();
+        const first = effect.all();
+        const second = UnusualEffect.all(effect.getLanguage());
 
         // Assert
-        expect(result.length).toBe(527);
+        expect([first.length, second.length]).toAllBe(527);
     });
 });
 
@@ -130,6 +168,7 @@ describe("KillstreakEffect", () => {
 
         // Assert and act
         expect(() => effect.find()).toThrow(NotFoundError);
+        expect(() => KillstreakEffect.find(effect.json())).toThrow(NotFoundError);
     });
 
     test("should return all the Killstreak effects", () => {
@@ -137,10 +176,23 @@ describe("KillstreakEffect", () => {
         const effect = new KillstreakEffect();
 
         // Act
-        const result = effect.all();
+        const first = effect.all();
+        const second = KillstreakEffect.all("English");
 
         // Assert
-        expect(result.length).toBe(7);
+        expect([first.length, second.length]).toAllBe(7);
+    });
+
+    test("eval should return true if the name matches a known Killstreak Effect", () => {
+        // Arrange
+        const effect = new KillstreakEffect({ name: "Tornado" });
+
+        // Act
+        const first = effect.eval();
+        const second = KillstreakEffect.eval(effect.json());
+
+        // Assert
+        expect([first, second]).toAllBe(true);
     });
 
     test("translate should throw an error if no translation exists", () => {
@@ -149,6 +201,7 @@ describe("KillstreakEffect", () => {
 
         // Act and assert
         expect(() => effect.translate("pirate")).toThrow(TranslationError);
+        expect(() => KillstreakEffect.translate(effect.json(), "pirate")).toThrow(TranslationError);
     });
 
     test("should throw if the language code is ", () => {
@@ -216,10 +269,11 @@ describe("KillstreakSheen", () => {
         const sheen = new KillstreakSheen({ name: "Deadly Daffodil" });
 
         // Act
-        const result = sheen.eval();
+        const first = sheen.eval();
+        const second = KillstreakSheen.eval(sheen.json());
 
         // Assert
-        expect(result).toBe(true);
+        expect([first, second]).toAllBe(true);
     });
 
     test("eval should return true if the id and name matches a known Killstreak Sheen", () => {
@@ -227,10 +281,11 @@ describe("KillstreakSheen", () => {
         const sheen = new KillstreakSheen({ id: 7, name: "Hot Rod" });
 
         // Act
-        const result = sheen.eval(true);
+        const first = sheen.eval(true);
+        const second = KillstreakSheen.eval(sheen.json(), true);
 
         // Assert
-        expect(result).toBe(true);
+        expect([first, second]).toAllBe(true);
     });
 
     test("eval should return false if only one constructor parameter is given in strict mode", () => {
@@ -238,10 +293,20 @@ describe("KillstreakSheen", () => {
         const sheen = new KillstreakSheen({ id: 3 });
 
         // Act
-        const result = sheen.eval(true);
+        const first = sheen.eval(true);
+        const second = KillstreakSheen.eval(sheen.json(), true);
 
         // Assert
-        expect(result).toBe(false);
+        expect([first, second]).toAllBe(false);
+    });
+
+    test("find should throw if the id results in an invalid Killstreak Sheen", () => {
+        // Arrange
+        const sheen = new KillstreakSheen({ id: 17 });
+
+        // Assert and act
+        expect(() => sheen.find()).toThrow(NotFoundError);
+        expect(() => KillstreakSheen.find(sheen.json())).toThrow(NotFoundError);
     });
 
     test("should translate Team Shine to Dutch", () => {
@@ -249,10 +314,11 @@ describe("KillstreakSheen", () => {
         const sheen = new KillstreakSheen({ name: "Team Shine" });
 
         // Act
-        const result = sheen.translate("dutch");
+        const first = sheen.translate("dutch");
+        const second = KillstreakSheen.translate(sheen.json(), "dutch");
 
         // Assert
-        expect(result.name).toBe("Teamglans");
+        expect([first.name, second.name]).toAllBe("Teamglans");
     });
 
     test("translate should throw if no constructor parameters is given", () => {
@@ -261,6 +327,7 @@ describe("KillstreakSheen", () => {
 
         // Act and assert
         expect(() => sheen.translate("dutch")).toThrow(NotFoundError);
+        expect(() => KillstreakSheen.translate(sheen.json(), "dutch")).toThrow(NotFoundError);
     });
 
     test("translate should throw if only one constructor parameter is given in strict mode", () => {
@@ -269,15 +336,19 @@ describe("KillstreakSheen", () => {
 
         // Act and assert
         expect(() => sheen.translate("dutch", true)).toThrow(NotFoundError);
+        expect(() => KillstreakSheen.translate(sheen.json(), "dutch", true)).toThrow(NotFoundError);
     });
 
     test("should translate Team Shine to Danish in strict mode", () => {
+        // Arrange
         const sheen = new KillstreakSheen({ id: 1, name: "Team Shine" });
 
-        const result = sheen.translate("danish", true);
+        // Act
+        const first = sheen.translate("danish", true);
+        const second = KillstreakSheen.translate(sheen.json(), "danish", true);
 
-        expect(result.id).toBe(1);
-        expect(result.name).toBe("Holdglans");
+        expect([first.id, second.id]).toAllBe(1);
+        expect([first.name, second.name]).toAllBe("Holdglans");
     });
 
     test("should return all the Killstreak sheens", () => {
@@ -285,15 +356,29 @@ describe("KillstreakSheen", () => {
         const effect = new KillstreakSheen();
 
         // Act
-        const result = effect.all();
+        const first = effect.all();
+        const second = KillstreakSheen.all(effect.getLanguage());
 
         // Assert
-        expect(result.length).toBe(7);
+        expect([first.length, second.length]).toAllBe(7);
+    });
+
+    test("should find the particle attributes with strict mode enabled", () => {
+        // Arrange
+        const sheen = new KillstreakSheen({ id: 3, name: "Manndarin" });
+
+        // Act
+        const first = sheen.find(true);
+        const second = KillstreakSheen.find(sheen.json(), true);
+
+        // Assert
+        expect([first.id, second.id]).toAllBe(3);
+        expect([first.name, second.name]).toAllBe("Manndarin");
     });
 });
 
 describe("ParticleAttribute", () => {
-    test("getters should the return the", () => {
+    test("getters should the return the id and name", () => {
         // Arrange
         const particle = new ParticleAttribute(5, "Agonizing Emerald");
 

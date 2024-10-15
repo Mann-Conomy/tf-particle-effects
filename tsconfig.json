@@ -5,7 +5,8 @@
 		"resolveJsonModule": true
 	},
 	"include": [
-		"src/**/*"
+		"src/**/*",
+		"jest.d.ts"
 	],
 	"exclude": [
 		"node_modules",
