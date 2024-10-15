@@ -378,7 +378,7 @@ describe("KillstreakSheen", () => {
 });
 
 describe("ParticleAttribute", () => {
-    test("getters should the return the", () => {
+    test("getters should the return the id and name", () => {
         // Arrange
         const particle = new ParticleAttribute(5, "Agonizing Emerald");
 
