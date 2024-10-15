@@ -6,6 +6,7 @@ module.exports = tseslint.config({
         ...eslint
     ],
     ignores: [
+        "jest.d.ts",
         "dist/**/*",
         "test/**/*.ts",
         "examples/*.ts",
