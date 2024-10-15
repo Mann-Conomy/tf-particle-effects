@@ -35,6 +35,7 @@ $ yarn test
 ```
 
 ## Examples
+
 Creating and evaluating Unusual particle effects from the Team Fortress 2 game files.
 
 ```js
@@ -42,18 +43,39 @@ import { UnusualEffect } from "@mann-conomy/tf-particle-effects";
 
 (async () => {
     try {
-        // Create a new Unusual Effect to represent Burning Flames
+        // Create a new Unusual effect to represent Burning Flames
         const effect = new UnusualEffect({ name: "Burning Flames" });
 
-        // Evaluate the particle effect based on the provided name
+        // Evaluate the Unusual effect based on the provided name
         if (effect.eval()) {
-            // Retrieve the effect's particle id and name
+            // Retrieve the Unusal effect's particle id and name
             const { id, name } = effect.find();
 
             console.log(id, name); // 13, Burning Flames
         }
     } catch (error) {
-        console.error("Error processing effect", error.message);
+        console.error("Error processing Unusual effect", error.message);
+    }
+})();
+```
+
+Want to keep things simple without class instantiation? Opt for the static functions instead!
+
+```js
+(async () => {
+    try {
+        // Create a new Killstreak effect to represent Singularity
+        const effect = { id: 2006 };
+
+        // Evaluate the Killstreak effect based on the provided id
+        if (KillstreakEffect.eval(effect)) {
+            // Retrieve the Killstreak effect's name
+            const { name } = KillstreakEffect.find(effect);
+
+            console.log("Killstreaker:", name); // Killstreaker: Singularity
+        }
+    } catch (error) {
+        console.error("Error processing Killstreak effect", error.message);
     }
 })();
 ```

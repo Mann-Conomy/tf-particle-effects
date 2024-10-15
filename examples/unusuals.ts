@@ -14,7 +14,7 @@ import UnusualEffect from "../src/classes/unusual-effect";
         }
     } catch (error: unknown) {
         if (error instanceof Error) {
-            console.error("Error processing effect", error.message);
+            console.error("Error processing Unusual effect", error.message);
         }
     }
 })();
