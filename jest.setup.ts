@@ -1,6 +1,5 @@
 import { expect } from "@jest/globals";
-
-type MathcerValue = number | string | boolean;
+import type { MathcerValue } from "./jest";
 
 function toAllBe(actual: MathcerValue[], expected: MathcerValue) {
     const pass = actual.every((value: MathcerValue) => value === expected);
