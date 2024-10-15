@@ -1,34 +1,31 @@
 import NotFoundError from "./errors/not-found";
-import TranslationError from "./errors/translation";
+import { isUndefinedOrEmpty } from "../lib/utils";
 import type { LanguageCode } from "@mann-conomy/tf-parser";
 import { InvalidParticle, LanguageTranslation } from "../resources/enums";
-import { compareById, compareByIdAndName, compareByIdOrName, isUndefinedOrEmpty } from "../lib/utils";
+import { evaluate, find, getAllAttributesOrThrow, translate } from "../lib/shared";
 import type { IParticleEffect, IParticleAttribute, IParticleEffects, PartialParticleEffect } from "../types/particle";
 
 /**
- * Represents a generic Particle Effect from the Team Fortress 2 game files.
+ * Represents a generic Particle effect from the Team Fortress 2 game files.
  */
 export default class ParticleEffect {
     private readonly id: number;
     private readonly name: string;
     private readonly language: LanguageCode;
     private readonly particles: IParticleEffects;
-    private readonly attributes: IParticleAttribute[];
 
     /**
      * Creates a new instance of ParticleEffect.
-     * @param effect The Particle Effect object.
+     * @param effect The Particle effect object.
      * @param particles An array of ParticleEffect objects.
      */
     constructor(effect: PartialParticleEffect = {}, particles: IParticleEffects) {
+        this.particles = particles;
         this.id = effect.id || InvalidParticle.Id;
         this.name = effect.name || InvalidParticle.Name;
         this.language = effect.language || LanguageTranslation.English;
 
-        this.particles = particles;
-        this.attributes = particles[this.language];
-
-        if (isUndefinedOrEmpty(this.attributes)) {
+        if (isUndefinedOrEmpty(this.particles[this.language])) {
             throw new NotFoundError("No particle effects were found matching the provided language code.");
         }
     }
@@ -39,11 +36,7 @@ export default class ParticleEffect {
      * @returns True if a matching particle attribute is found, otherwise false.
      */
     eval(strict = false): boolean {
-        if (strict) {
-            return this.attributes.some(attribute => compareByIdAndName(attribute, this.json()));
-        }
-
-        return this.attributes.some(attribute => compareByIdOrName(attribute, this.json()));
+        return evaluate(this.particles, this.json(), strict);
     }
 
     /**
@@ -53,23 +46,7 @@ export default class ParticleEffect {
      * @throws An error if the particle effect is too new or if no particle effect was found with the specified options.
      */
     find(strict = false): IParticleAttribute {
-        if (strict) {
-            const attribute = this.attributes.find(attribute => compareByIdAndName(attribute, this.json()));
-
-            if (attribute !== undefined) {
-                return attribute;
-            }
-
-            throw new NotFoundError("No particle effect was found with the specified id and name.");
-        }
-
-        const attribute = this.attributes.find(attribute => compareByIdOrName(attribute, this.json()));
-
-        if (attribute !== undefined) {
-            return attribute;
-        }
-
-        throw new NotFoundError("No particle effect was found with the specified id or name.");
+        return find(this.particles, this.json(), strict);
     }
 
     /**
@@ -80,23 +57,15 @@ export default class ParticleEffect {
      * @throws An error if no particle effect matches the constructor options.
      */
     translate(language: LanguageCode, strict = false): IParticleAttribute {
-        const particle = this.find(strict);
-    
-        const attribute = this.particles[language].find(attribute => compareById(attribute, particle.id));
-
-        if (attribute !== undefined) {
-            return attribute;
-        }
-
-        throw new TranslationError("No translation exists for this particle effect.");
+        return translate(this.particles, this.json(), language, strict);
     }
 
     /**
-     * Gets all the Particle Effects currently available in Team Fortress 2.
+     * Gets all the Particle effects currently available in Team Fortress 2.
      * @returns An array of particle attributes for each particle effect in Team Fortress 2.
      */
     all(): IParticleAttribute[] {
-        return this.attributes;
+        return getAllAttributesOrThrow(this.particles, this.language);
     }
 
     /**
