@@ -41,43 +41,41 @@ Creating and evaluating Unusual particle effects from the Team Fortress 2 game f
 ```js
 import { UnusualEffect } from "@mann-conomy/tf-particle-effects";
 
-(async () => {
-    try {
-        // Create a new Unusual effect to represent Burning Flames
-        const effect = new UnusualEffect({ name: "Burning Flames" });
+try {
+    // Create a new Unusual effect to represent Burning Flames
+    const effect = new UnusualEffect({ name: "Burning Flames" });
 
-        // Evaluate the Unusual effect based on the provided name
-        if (effect.eval()) {
-            // Retrieve the Unusal effect's particle id and name
-            const { id, name } = effect.find();
+    // Evaluate the Unusual effect based on the provided name
+    if (effect.eval()) {
+        // Retrieve the Unusal effect's particle id and name
+        const { id, name } = effect.find();
 
-            console.log(id, name); // 13, Burning Flames
-        }
-    } catch (error) {
-        console.error("Error processing Unusual effect", error.message);
+        console.log(id, name); // 13, Burning Flames
     }
-})();
+} catch (error) {
+    console.error("Error processing Unusual effect", error.message);
+}
 ```
 
 Want to keep things simple without class instantiation? Opt for the static functions instead!
 
 ```js
-(async () => {
-    try {
-        // Create a new Killstreak effect to represent Singularity
-        const effect = { id: 2006 };
+import { KillstreakEffect } from "@mann-conomy/tf-particle-effects";
 
-        // Evaluate the Killstreak effect based on the provided id
-        if (KillstreakEffect.eval(effect)) {
-            // Retrieve the Killstreak effect's name
-            const { name } = KillstreakEffect.find(effect);
+try {
+    // Create a new Killstreak effect to represent Singularity
+    const effect = { id: 2006 };
 
-            console.log("Killstreaker:", name); // Killstreaker: Singularity
-        }
-    } catch (error) {
-        console.error("Error processing Killstreak effect", error.message);
+    // Evaluate the Killstreak effect based on the provided id
+    if (KillstreakEffect.eval(effect)) {
+        // Retrieve the Killstreak effect's name
+        const { name } = KillstreakEffect.find(effect);
+
+        console.log("Killstreaker:", name); // Killstreaker: Singularity
     }
-})();
+} catch (error) {
+    console.error("Error processing Killstreak effect", error.message);
+}
 ```
 
 Some more examples are available in the [examples](https://github.com/Mann-Conomy/tf-particle-effects/tree/main/examples) and [test](https://github.com/Mann-Conomy/tf-particle-effects/tree/main/test) directories.
@@ -90,4 +88,4 @@ See the [Wiki pages](https://github.com/Mann-Conomy/tf-particle-effects/wiki) fo
 
 [MIT](LICENSE)
 
-Copyright 2024, The Mann-Conomy Project
+Copyright 2025, The Mann-Conomy Project
