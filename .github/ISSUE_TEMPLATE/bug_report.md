@@ -31,19 +31,17 @@ Calling `find()` on a new `UnusualEffect` instance returns "Error processing eff
 ```js
 import { UnusualEffect } from "@mann-conomy/tf-particle-effects";
 
-(async () => {
-    try {
-        const effect = new UnusualEffect({ name: "Burning Flames" });
+try {
+    const effect = new UnusualEffect({ name: "Burning Flames" });
 
-        if (effect.eval()) {
-            const { id, name } = effect.find();
+    if (effect.eval()) {
+        const { id, name } = effect.find();
 
-            console.log(id, name);
-        }
-    } catch (error) {
-        console.error("Error processing effect", error.message);
+        console.log(id, name);
     }
-})();
+} catch (error) {
+    console.error("Error processing effect", error.message);
+}
 ```
 
 ## Environment
