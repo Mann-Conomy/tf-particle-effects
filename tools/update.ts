@@ -2,7 +2,7 @@ import "dotenv/config";
 import { join } from "path";
 import { glob } from "glob";
 import { readFile, writeFile } from "fs/promises";
-import { LanguageParser } from "@mann-conomy/tf-parser";
+import { LocalizationParser } from "@mann-conomy/tf-parser";
 import ParticleAttribute from "../src/classes/particle-attribute";
 import type { ParticleAttributeFilter, ParticleFileArray } from "../src/types/particle";
 
@@ -163,7 +163,7 @@ function createParticleFiles(): ParticleFileArray {
     for (const languageFile of languageFiles) {
         const file = await readLanguageFile(languageFile);
 
-        const { lang } = LanguageParser.parse(file);
+        const { lang } = LocalizationParser.parse(file);
 
         for (const particle of particles) {
             particle.effects[lang.Language] = getParticleAttributes(lang.Tokens, particle.filter);
