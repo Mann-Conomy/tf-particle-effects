@@ -1,6 +1,6 @@
 {
   "name": "@mann-conomy/tf-particle-effects",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "A Node.js wrapper for Team Fortress 2's in-game particle effects.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
