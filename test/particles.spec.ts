@@ -148,7 +148,7 @@ describe("UnusualEffect", () => {
         const second = UnusualEffect.all(effect.getLanguage());
 
         // Assert
-        expect([first.length, second.length]).toAllBe(584);
+        expect([first.length, second.length]).toAllBe(608);
     });
 });
 
